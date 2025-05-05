@@ -184,6 +184,9 @@ void loadBuffer() {
           aaAudio.dacBuffer[i] = ((dacBuffForbgm[i]-127)+(dacBuffForsem[i]-127))/2+127;
         }
       }
+      if(!myFile_sem.available()){
+        myFile_sem.close();
+      }
     }
     else if(myFile_bgm.available()){
       if (aaAudio.dacBitsPerSample == 8) {

@@ -33,3 +33,4 @@ void forSD(){
 };
 
 bool DoINeedToPlayThis = false;
+int ShouldIStopMusic = 0;

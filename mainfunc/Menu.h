@@ -39,7 +39,7 @@ private:
     int X_joy, Y_joy;
     const uint16_t bg_c_menu = RGB565(52, 42, 63); //backgroung colour menu
     bool check_if_btn_clicked = false;
-    int volume = 2; // 0 - выключено, 1 - тихо, 2- средне, 3 - громко
+    int volume = 1; // 0 - выключено, 1 - включено
 };
 Menu::Menu(Arduino_GFX *g):gfx(g){
     color_of_zmeu = new uint16_t[10];
@@ -159,33 +159,19 @@ void Menu::print_main_things(){
      
     gfx->fillRect(10, 390, 60, 60, RGB565_WHITE);
     if (volume >= 0){
-     
         gfx->fillRect(12, 392, 56, 56, RGB565_BLACK);
-     
         gfx->fillRect(28, 396, 24, 9, RGB565_WHITE);
     }
-    if (volume >= 1){
-     
+    if (volume == 1){
+    
         gfx->fillRect(28, 409, 24, 9, RGB565_WHITE);
-     
         gfx->fillTriangle(52, 409, 52, 417, 56, 417, RGB565_WHITE);
-     
         gfx->fillTriangle(28, 409, 28, 417, 24, 417, RGB565_WHITE);
-    }
-    if(volume >= 2){
-     
         gfx->fillRect(24, 422, 54-22, 9, RGB565_WHITE);
-     
         gfx->fillTriangle(56, 422, 56, 430, 60, 430, RGB565_WHITE);
-     
         gfx->fillTriangle(24, 422, 24, 430, 20, 430, RGB565_WHITE);
-    }
-    if (volume == 3) {//3
-     
         gfx->fillRect(20, 435, 54-14, 9, RGB565_WHITE);
-     
         gfx->fillTriangle(60, 435, 60, 443, 64, 443, RGB565_WHITE);
-     
         gfx->fillTriangle(20, 435, 20, 443, 16, 443, RGB565_WHITE);
     }
     //змейка
@@ -283,36 +269,23 @@ bool Menu::action_after_btn_clicked(){
         }
         else{ //0
             if (volume == 0){
-     
             gfx->fillRect(12, 392, 56, 56, RGB565_BLACK);
-     
             gfx->fillRect(28, 396, 24, 9, RGB565_WHITE);
-            }
-            else if (volume == 1){
-     
-            gfx->fillRect(28, 409, 24, 9, RGB565_WHITE);
-     
-            gfx->fillTriangle(52, 409, 52, 417, 56, 417, RGB565_WHITE);
-     
-            gfx->fillTriangle(28, 409, 28, 417, 24, 417, RGB565_WHITE);
-            }
-            else if(volume == 2){
-     
-            gfx->fillRect(24, 422, 54-22, 9, RGB565_WHITE);
-     
-            gfx->fillTriangle(56, 422, 56, 430, 60, 430, RGB565_WHITE);
-     
-            gfx->fillTriangle(24, 422, 24, 430, 20, 430, RGB565_WHITE);
+            ShouldIStopMusic = 1;
             }
             else {//3
-     
+            gfx->fillRect(28, 409, 24, 9, RGB565_WHITE);
+            gfx->fillTriangle(52, 409, 52, 417, 56, 417, RGB565_WHITE);
+            gfx->fillTriangle(28, 409, 28, 417, 24, 417, RGB565_WHITE);
+            gfx->fillRect(24, 422, 54-22, 9, RGB565_WHITE);
+            gfx->fillTriangle(56, 422, 56, 430, 60, 430, RGB565_WHITE);
+            gfx->fillTriangle(24, 422, 24, 430, 20, 430, RGB565_WHITE);
             gfx->fillRect(20, 435, 54-14, 9, RGB565_WHITE);
-     
             gfx->fillTriangle(60, 435, 60, 443, 64, 443, RGB565_WHITE);
-     
             gfx->fillTriangle(20, 435, 20, 443, 16, 443, RGB565_WHITE);
+            ShouldIStopMusic = 0;
             }
-            volume = (volume + 1)%4;
+            volume = (volume + 1)%2;
         }
         check_if_btn_clicked = false;
         return !check_if_btn_clicked;

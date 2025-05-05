@@ -43,9 +43,7 @@ void setup() {
   }
   aaAudio.begin(0, 1); 
   aaAudio.autoAdjust = 0;
-  //Serial.println("open playAudio");
   playAudio("game/music/");
-  //Serial.println("close playAudio");
   forLCD();
   pinMode(PinX, INPUT);
   pinMode(PinY, INPUT);
@@ -62,7 +60,7 @@ void loop() {
 //игра идет
   if(gamemode==3){ 
     go->GoAndEat(gfx);
-    if(DoINeedToPlayThis){
+    if(DoINeedToPlayThis && ShouldIStopMusic%10 == 0){
       forSD();
       playSoundTrack("/game/sounds/nyam.wav");
       forLCD();
@@ -75,9 +73,11 @@ void loop() {
   }
 //игра прекратилась 
   else if(gamemode == 4){
+    if(ShouldIStopMusic%10 == 0){
     forSD();
     playSoundTrack("/game/sounds/end.wav");
     forLCD();
+    }
     gfx->fillScreen(RGB565_GREEN);
     delete go;
     tm1637->displayStr("0000");
@@ -98,11 +98,19 @@ void loop() {
       if((millis()-*RepeatAction)>300){
         menu->dvig();
         menu->action_after_btn_clicked();
-        if(DoINeedToPlayThis){
+        if(DoINeedToPlayThis && ShouldIStopMusic%10 == 0){
           forSD();
           playSoundTrack("/game/sounds/tap.wav");
           forLCD();
           DoINeedToPlayThis = false;
+        }
+        if(ShouldIStopMusic == 0){
+          aaAudio.feedDAC(channelSelection);
+          ShouldIStopMusic = 20;
+        }
+        else if (ShouldIStopMusic == 1){
+          aaAudio.disableDAC(); 
+          ShouldIStopMusic = 21;
         }
         menu->direction();
         *RepeatAction = millis();
@@ -110,7 +118,7 @@ void loop() {
       }
     }
     else {menu->direction(); digitalWrite(GFX_BL, LOW); aaAudio.disableDAC(); 
-        if((((millis()-set_menu_time)/1000ul%3600ul)/60ul*100ul)<1) aaAudio.feedDAC(channelSelection);}
+        if((((millis()-set_menu_time)/1000ul%3600ul)/60ul*100ul)<1) if(ShouldIStopMusic%10 == 0) aaAudio.feedDAC(channelSelection);}
   }
 //игра подгатавливается
   else if (gamemode == 2){
